@@ -3,14 +3,13 @@ package hr.fer.tel.rassus.server.beans;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Entity
 @Data
 public class Reading {
     @Id
     @GeneratedValue
     private Long id;
+
 
     private Double temperature;
     private Double pressure;
