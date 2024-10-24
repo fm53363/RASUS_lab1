@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController()
 @RequestMapping("sensors")
@@ -20,6 +21,14 @@ public class SensorsController {
     public SensorsController(SensorRepository sensorRepository) {
         this.sensorRepository = sensorRepository;
     }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Sensor> getSensorById(@PathVariable("id") Long id) {
+        Optional<Sensor> sensor = sensorRepository.findById(id);
+        return sensor.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+    }
+
 
     //  TODO 4.1  Registracija
     @PostMapping(value = "/")
