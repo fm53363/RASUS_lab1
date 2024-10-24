@@ -1,5 +1,6 @@
 package hr.fer.tel.rassus.server.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class Sensor {
     private String ip;
     private Integer port;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "sensor")
     List<Reading> readings;
 

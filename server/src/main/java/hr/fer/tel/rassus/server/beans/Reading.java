@@ -1,5 +1,6 @@
 package hr.fer.tel.rassus.server.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class Reading {
     private Double so2;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "sensor_id")
     private Sensor sensor;
 

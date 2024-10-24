@@ -47,6 +47,11 @@ public class SensorsController {
 
 
     //  TODO 4.4  Popis senzora
+    @GetMapping(value = "/")
+    public List<Sensor> getAllSensors() {
+        return sensorRepository.findAll();
+
+    }
 
     //  TODO 4.2  Najbliži susjed
     @GetMapping("/closest/{id}")
