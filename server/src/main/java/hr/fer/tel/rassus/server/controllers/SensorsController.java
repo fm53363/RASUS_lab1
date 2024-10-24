@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +35,7 @@ public class SensorsController {
         try {
             var savedSensor = sensorRepository.save(sensor);
             HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(new URI("/sensors/" + savedSensor.getId()));
+            headers.set("Location", "/sensors/" + savedSensor.getId());
             return new ResponseEntity<>("created sensor with id:" + savedSensor.getId(), headers, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(String.format("Sensor with ip=%s and port=%s already exists", sensor.getIp(), sensor.getPort()), HttpStatus.CONFLICT);
