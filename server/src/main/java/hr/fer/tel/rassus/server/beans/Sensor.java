@@ -1,9 +1,11 @@
 package hr.fer.tel.rassus.server.beans;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.net.URI;
 import java.util.List;
 
 @Entity
@@ -11,6 +13,9 @@ import java.util.List;
 @Table(name = "sensor", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"ip", "port"})
 })
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Sensor {
     @Id
     @GeneratedValue
@@ -24,12 +29,6 @@ public class Sensor {
 
     @OneToMany(mappedBy = "sensor")
     List<Reading> readings;
-
-    public URI getUrl() {
-        // Construct the URL based on the IP address and port
-        return URI.create("http://" + ip + ":" + port); // Assuming getId() gives the unique identifier
-
-    }
 
 
 }
