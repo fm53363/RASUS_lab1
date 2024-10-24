@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -49,5 +50,12 @@ public class ReadingController {
 
 
     // TODO 4.5  Popis očitanja pojedinog senzora
+    @GetMapping(value = "sensor/{id}")
+    public ResponseEntity<List<Reading>> getSensorReadings(@PathVariable("id") Long id) {
+        Optional<Sensor> optionalSensor = sensorRepository.findById(id);
+        return optionalSensor.map(opt -> new ResponseEntity<>(opt.getReadings(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+    }
+
 
 }
