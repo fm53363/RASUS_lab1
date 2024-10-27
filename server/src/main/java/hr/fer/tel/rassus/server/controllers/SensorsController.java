@@ -56,7 +56,18 @@ public class SensorsController {
     //  TODO 4.2  Najbliži susjed
     @GetMapping("/closest/{id}")
     public ResponseEntity<Sensor> getClosestSensor(@PathVariable Long id) {
-        return findClosestNeighbour(id);
+        Sensor sensor = sensorRepository.findById(id).orElse(null);
+        if (sensor == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Sensor> sensors = sensorRepository.findAll();
+
+        var sensorOpt = sensors.stream().
+                filter((s) -> !s.getId().equals(id)).
+                min((s1, s2) -> Double.compare(haversineFormula(s1, sensor), haversineFormula(s2, sensor)));
+
+        return sensorOpt.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+
     }
 
     private double haversineFormula(Sensor s1, Sensor s2) {
@@ -76,20 +87,5 @@ public class SensorsController {
         return 6371 * c;
     }
 
-    private ResponseEntity<Sensor> findClosestNeighbour(Long id) {
-        Sensor sensor = sensorRepository.findById(id).orElse(null);
-        if (sensor == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<Sensor> sensors = sensorRepository.findAll();
-
-        var sensorOpt = sensors.stream().
-                filter((s) -> !s.getId().equals(id)).
-                min((s1, s2) -> Double.compare(haversineFormula(s1, sensor), haversineFormula(s2, sensor)));
-
-        return sensorOpt.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
-
-
-    }
 
 }
