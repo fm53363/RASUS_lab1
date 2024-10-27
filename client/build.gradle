@@ -26,6 +26,14 @@ dependencies {
 	  implementation 'io.grpc:grpc-stub:1.68.0'
 	  compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
     //################ GRPC ################
+    // Retrofit core library
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+    // Jackson converter for Retrofit
+    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+
+    // Jackson core library (optional but recommended to ensure compatibility)
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0' // use latest version
 }
 
 // Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.

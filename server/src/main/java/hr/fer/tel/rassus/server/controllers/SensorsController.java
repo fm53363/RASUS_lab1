@@ -30,7 +30,7 @@ public class SensorsController {
 
 
     //  TODO 4.1  Registracija
-    @PostMapping(value = "/")
+    @PostMapping
     public ResponseEntity<String> postSensor(@RequestBody Sensor sensor) {
         try {
             var savedSensor = sensorRepository.save(sensor);
