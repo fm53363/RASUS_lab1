@@ -37,7 +37,7 @@ public class SensorsController {
             var savedSensor = sensorRepository.save(sensor);
             HttpHeaders headers = new HttpHeaders();
             headers.set("Location", "/sensors/" + savedSensor.getId());
-            return new ResponseEntity<>("created sensor with id:" + savedSensor.getId(), headers, HttpStatus.CREATED);
+            return new ResponseEntity<>(headers, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(String.format("Sensor with ip=%s and port=%s already exists", sensor.getIp(), sensor.getPort()), HttpStatus.CONFLICT);
         } catch (Exception e) {
