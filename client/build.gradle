@@ -11,7 +11,7 @@ version '1'
 
 repositories {
     maven { // The google mirror is less flaky than mavenCentral()
-        url "https://maven-central.storage-download.googleapis.com/maven2/" 
+        url "https://maven-central.storage-download.googleapis.com/maven2/"
     }
     mavenCentral()
     mavenLocal()
@@ -20,26 +20,33 @@ repositories {
 
 dependencies {
     //################ GRPC ################
-	  implementation 'io.grpc:grpc-netty-shaded:1.68.0'
-	  implementation 'io.grpc:grpc-protobuf:1.68.0'
-	  implementation 'io.grpc:grpc-services:1.68.0'
-	  implementation 'io.grpc:grpc-stub:1.68.0'
-	  compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
+    implementation 'io.grpc:grpc-netty-shaded:1.68.0'
+    implementation 'io.grpc:grpc-protobuf:1.68.0'
+    implementation 'io.grpc:grpc-services:1.68.0'
+    implementation 'io.grpc:grpc-stub:1.68.0'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
     //################ GRPC ################
-    // Retrofit core library
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
+    // Retrofit core library
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     // Jackson converter for Retrofit
     implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
-
     // Jackson core library (optional but recommended to ensure compatibility)
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0' // use latest version
+
+    // csv
+    implementation 'com.opencsv:opencsv:5.9'
+
+    //loombook
+    compileOnly 'org.projectlombok:lombok:1.18.30'  // Use the latest version here
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 // Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
 sourceSets {
     main {
-    	// Remember to refresh gradle project in Eclipse (F5) 
+        // Remember to refresh gradle project in Eclipse (F5) 
         java {
             srcDirs 'build/generated/source/proto/main/grpc'
             srcDirs 'build/generated/source/proto/main/java'
@@ -54,22 +61,22 @@ test {
 //################ GRPC ################
 // Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
 protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:3.25.5"
-  }
-  plugins {
-    grpc {
-      artifact = 'io.grpc:protoc-gen-grpc-java:1.68.0'
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.5"
     }
-  }
-  generateProtoTasks {
-    all()*.plugins {
-      grpc {}
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.68.0'
+        }
     }
-    all().each {
-      it.group = 'build'
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+        all().each {
+            it.group = 'build'
+        }
     }
-  }
 }
 //################ GRPC ################
 task runExampleClient(type: JavaExec) {
