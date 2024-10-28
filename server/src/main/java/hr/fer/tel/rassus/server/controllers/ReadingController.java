@@ -1,7 +1,7 @@
 package hr.fer.tel.rassus.server.controllers;
 
-import hr.fer.tel.rassus.server.beans.Reading;
-import hr.fer.tel.rassus.server.beans.Sensor;
+import hr.fer.tel.rassus.server.entity.Reading;
+import hr.fer.tel.rassus.server.entity.Sensor;
 import hr.fer.tel.rassus.server.services.ReadingRepository;
 import hr.fer.tel.rassus.server.services.SensorRepository;
 import org.springframework.http.HttpHeaders;

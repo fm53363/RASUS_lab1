@@ -1,6 +1,7 @@
 package hr.fer.tel.rassus.server.controllers;
 
-import hr.fer.tel.rassus.server.beans.Sensor;
+import hr.fer.tel.rassus.server.dto.SensorDTO;
+import hr.fer.tel.rassus.server.entity.Sensor;
 import hr.fer.tel.rassus.server.services.SensorRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +56,7 @@ public class SensorsController {
 
     //  TODO 4.2  Najbliži susjed
     @GetMapping("/closest/{id}")
-    public ResponseEntity<Sensor> getClosestSensor(@PathVariable Long id) {
+    public ResponseEntity<SensorDTO> getClosestSensor(@PathVariable Long id) {
         Sensor sensor = sensorRepository.findById(id).orElse(null);
         if (sensor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -66,7 +67,17 @@ public class SensorsController {
                 filter((s) -> !s.getId().equals(id)).
                 min((s1, s2) -> Double.compare(haversineFormula(s1, sensor), haversineFormula(s2, sensor)));
 
-        return sensorOpt.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+        if (sensorOpt.isPresent()) {
+            var dto = SensorDTO.builder().
+                    ip(sensorOpt.get().getIp()).
+                    port(sensorOpt.get().getPort()).
+                    latitude(sensorOpt.get().getLatitude()).
+                    longitude(sensorOpt.get().getLongitude())
+                    .build();
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
 
     }
 

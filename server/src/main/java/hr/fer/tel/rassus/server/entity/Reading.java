@@ -1,4 +1,4 @@
-package hr.fer.tel.rassus.server.beans;
+package hr.fer.tel.rassus.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
