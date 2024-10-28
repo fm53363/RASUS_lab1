@@ -14,7 +14,7 @@ public interface SensorApi {
     Call<Void> postSensor(@Body Sensor sensor);
 
     @GET("/sensors/closest/{id}")
-    Call<Sensor> getSensor(@Path("id") String id);
+    Call<Sensor> getClosestSensor(@Path("id") String id);
 
 
 }

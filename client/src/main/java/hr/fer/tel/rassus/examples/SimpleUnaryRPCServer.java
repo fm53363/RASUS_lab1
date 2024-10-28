@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class SimpleUnaryRPCServer {
     private static final Logger logger = Logger.getLogger(SimpleUnaryRPCServer.class.getName());
     private final UppercaseService service;
-    private final int port;
+    private int port;
     private Server server;
 
     /**
@@ -56,6 +56,7 @@ public class SimpleUnaryRPCServer {
                 .addService(service)
                 .build()
                 .start();
+        this.port = server.getPort();
         logger.info("Server started on " + port);
 
         //  Clean shutdown of server in case of JVM shutdown
