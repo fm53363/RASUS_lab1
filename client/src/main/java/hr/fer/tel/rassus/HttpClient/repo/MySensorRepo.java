@@ -29,6 +29,7 @@ public class MySensorRepo {
                 throw new RuntimeException(e);
             }
         }
+        return INSTANCE;
     }
 
 
