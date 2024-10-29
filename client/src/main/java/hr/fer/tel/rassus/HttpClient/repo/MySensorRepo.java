@@ -11,11 +11,24 @@ import java.util.List;
 
 public class MySensorRepo {
     private static final String CSV_FILE_NAME = "readings[6].csv";
+    private static MySensorRepo INSTANCE;
+
     private List<SensorReading> sensorReadings;
 
-    public MySensorRepo() throws IOException, CsvException {
+
+    private MySensorRepo() throws IOException, CsvException {
         this.sensorReadings = new ArrayList<>();
         readFromCsv();
+    }
+
+    public static MySensorRepo getInstance() {
+        if (INSTANCE == null) {
+            try {
+                INSTANCE = new MySensorRepo();
+            } catch (IOException | CsvException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 

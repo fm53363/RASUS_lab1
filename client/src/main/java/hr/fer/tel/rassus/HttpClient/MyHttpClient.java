@@ -36,7 +36,6 @@ public class MyHttpClient {
         try {
             Response<Void> response = sensorApi.postSensor(currentSensor).execute();
             String location = response.headers().get("Location");
-
             long id = Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
             logger.info("Current sensor registered  with ID:" + id);
             return id;
