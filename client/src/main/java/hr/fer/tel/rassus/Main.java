@@ -17,7 +17,6 @@ public class Main {
     private static final String SERVER_URL = "http://localhost:8090/sensors/";
     private static final MyHttpClient httpClient = new MyHttpClient(SERVER_URL);
     private static final MySensorRepo SENSOR_REPO = MySensorRepo.getInstance();
-
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     private static RPCClient rpcClient;
@@ -40,7 +39,7 @@ public class Main {
             while (true) {
                 long elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
-                // napravi ocitanje
+                // make reading
                 int currentReadingId = (int) elapsedSeconds % 100;
                 SensorReading currentReading = SENSOR_REPO.getReading(currentReadingId);
                 logger.info("Current reading: " + currentReading);
@@ -61,7 +60,8 @@ public class Main {
                     calibratedReading = currentReading.calibrate(neighbourReading);
                 }
 
-                //TODO SEND calibrated data to server
+                // save reading
+                httpClient.postReadingForSensor(currentSensorId, calibratedReading);
                 try {
                     Thread.sleep(20000);
                 } catch (InterruptedException e) {
