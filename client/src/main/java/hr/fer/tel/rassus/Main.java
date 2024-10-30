@@ -20,41 +20,46 @@ public class Main {
 
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
+    private static RPCClient rpcClient;
+    private static RPCServer rpcServer;
+
 
     public static void main(String[] args) {
         try {
             // start rpc server
-            var RPCserver = new RPCServer(new ReadingExchangeService(), 0);
-            RPCserver.start();
-            int port = RPCserver.getPort();
+            rpcServer = new RPCServer(new ReadingExchangeService(), 0);
+            rpcServer.start();
+            int port = rpcServer.getPort();
 
             // registrate sensor
             Sensor currentSensor = SensorFactory.createRandomSensor(port);
             Long currentSensorId = httpClient.register(currentSensor);
-            Sensor closestSensor = httpClient.findClosestSensor(currentSensorId);
-
+            Sensor closestSensor = null;
 
             long startTime = System.currentTimeMillis();
             while (true) {
                 long elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000;
+
                 // napravi ocitanje
                 int currentReadingId = (int) elapsedSeconds % 100;
                 SensorReading currentReading = SENSOR_REPO.getReading(currentReadingId);
                 logger.info("Current reading: " + currentReading);
 
-                //TODO send grpc message to closest sensor
                 if (closestSensor == null) {
                     closestSensor = httpClient.findClosestSensor(currentSensorId);
                 }
 
                 SensorReading neighbourReading = null;
                 if (closestSensor != null) {
-                    RPCClient client = new RPCClient(closestSensor.getIp(), closestSensor.getPort());
-                    neighbourReading = client.requestReading(currentReadingId + 1);
+                    rpcClient = new RPCClient(closestSensor.getIp(), closestSensor.getPort());
+                    neighbourReading = rpcClient.requestReading(currentReadingId + 1);
                 }
 
-
-                //TODO calibrate readings
+                // calibrate readings
+                SensorReading calibratedReading = currentReading;
+                if (neighbourReading != null) {
+                    calibratedReading = currentReading.calibrate(neighbourReading);
+                }
 
                 //TODO SEND calibrated data to server
                 try {
@@ -68,6 +73,9 @@ public class Main {
         } catch (Exception e) {
             System.err.println(e.getMessage());
 
+
         }
+
+
     }
 }
