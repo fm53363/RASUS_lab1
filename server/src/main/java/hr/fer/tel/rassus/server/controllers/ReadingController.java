@@ -44,7 +44,7 @@ public class ReadingController {
         sensor.getReadings().add(savedReading);
         sensorRepository.save(sensor);
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Location", "/readings/" + id);
+        headers.set("Location", "/readings/" + savedReading.getId());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
