@@ -1,4 +1,4 @@
-package hr.fer.tel.rassus.HttpClient.factory;
+package hr.fer.tel.rassus.HttpClient.repo;
 
 import hr.fer.tel.rassus.HttpClient.dto.Sensor;
 

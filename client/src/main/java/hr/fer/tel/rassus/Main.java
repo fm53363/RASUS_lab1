@@ -2,52 +2,63 @@ package hr.fer.tel.rassus;
 
 import hr.fer.tel.rassus.HttpClient.MyHttpClient;
 import hr.fer.tel.rassus.HttpClient.dto.Sensor;
-import hr.fer.tel.rassus.HttpClient.factory.SensorFactory;
 import hr.fer.tel.rassus.HttpClient.repo.MySensorRepo;
-import hr.fer.tel.rassus.examples.SimpleUnaryRPCServer;
-import hr.fer.tel.rassus.examples.UppercaseService;
+import hr.fer.tel.rassus.HttpClient.repo.SensorFactory;
+import hr.fer.tel.rassus.HttpClient.repo.SensorReading;
+import hr.fer.tel.rassus.grpc.RPCClient;
+import hr.fer.tel.rassus.grpc.RPCServer;
+import hr.fer.tel.rassus.grpc.ReadingExchangeService;
+
+import java.util.logging.Logger;
+
 
 public class Main {
 
     private static final String SERVER_URL = "http://localhost:8090/sensors/";
-    private static final MyHttpClient CLIENT = new MyHttpClient(SERVER_URL);
+    private static final MyHttpClient httpClient = new MyHttpClient(SERVER_URL);
+    private static final MySensorRepo SENSOR_REPO = MySensorRepo.getInstance();
 
-    private static Sensor CLOSEST_SENSOR = null;
-    private static Sensor CURRENT_SENSOR;
-    private static long CURRENT_SENSOR_ID;
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+
 
     public static void main(String[] args) {
         try {
-            MySensorRepo repo = MySensorRepo.getInstance();  // read from csv
-
             // start rpc server
-            var RPCserver = new SimpleUnaryRPCServer(new UppercaseService(), 0);
+            var RPCserver = new RPCServer(new ReadingExchangeService(), 0);
             RPCserver.start();
-            var port = RPCserver.getPort();
-
+            int port = RPCserver.getPort();
 
             // registrate sensor
-            CURRENT_SENSOR = SensorFactory.createRandomSensor(port);
-            CURRENT_SENSOR_ID = CLIENT.register(CURRENT_SENSOR);
+            Sensor currentSensor = SensorFactory.createRandomSensor(port);
+            Long currentSensorId = httpClient.register(currentSensor);
+            Sensor closestSensor = httpClient.findClosestSensor(currentSensorId);
 
-            CLOSEST_SENSOR = CLIENT.findClosestSensor(CURRENT_SENSOR_ID);
 
             long startTime = System.currentTimeMillis();
             while (true) {
                 long elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000;
-                System.out.println("Seconds elapsed: " + elapsedSeconds);
                 // napravi ocitanje
-                System.out.println("Current reading: " + repo.getReading((int) elapsedSeconds % 100));
+                int currentReadingId = (int) elapsedSeconds % 100;
+                SensorReading currentReading = SENSOR_REPO.getReading(currentReadingId);
+                logger.info("Current reading: " + currentReading);
+
                 //TODO send grpc message to closest sensor
-                if (CLOSEST_SENSOR != null) {
-                    CLOSEST_SENSOR = CLIENT.findClosestSensor(CURRENT_SENSOR_ID);
+                if (closestSensor == null) {
+                    closestSensor = httpClient.findClosestSensor(currentSensorId);
+                }
+
+                SensorReading neighbourReading = null;
+                if (closestSensor != null) {
+                    RPCClient client = new RPCClient(closestSensor.getIp(), closestSensor.getPort());
+                    neighbourReading = client.requestReading(currentReadingId + 1);
                 }
 
 
                 //TODO calibrate readings
-                //TODO SEND calibrated data to sensor
+
+                //TODO SEND calibrated data to server
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(20000);
                 } catch (InterruptedException e) {
                     System.out.println("Process interrupted");
                     break;

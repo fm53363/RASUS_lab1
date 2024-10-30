@@ -63,7 +63,8 @@ public class MySensorRepo {
             reading.setPressure(parseDoubleOrNull(record[1]));
             reading.setHumidity(parseDoubleOrNull(record[2]));
             reading.setCo(parseDoubleOrNull(record[3]));
-            reading.setSo2(parseDoubleOrNull(record[4]));
+            reading.setNo2(parseDoubleOrNull(record[4]));
+            reading.setSo2(parseDoubleOrNull(record[5]));
             this.sensorReadings.add(reading);
         }
         reader.close();
