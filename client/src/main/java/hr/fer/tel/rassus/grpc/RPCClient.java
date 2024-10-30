@@ -20,7 +20,7 @@ public class RPCClient {
         this.readingExchangeBlockingStub = ReadingExchangeGrpc.newBlockingStub(channel);
     }
 
-    protected void stop() throws InterruptedException {
+    public void stop() throws InterruptedException {
 //    Initiates an orderly shutdown in which preexisting calls continue but new calls are
 //    immediately cancelled. Waits for the channel to become terminated, giving up if the timeout
 //    is reached.
