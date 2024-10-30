@@ -33,13 +33,12 @@ public class MyHttpClient {
     }
 
 
-    public Long postReadingForSensor(Long id, SensorReading reading) {
+    public void postReadingForSensor(Long id, SensorReading reading) {
         try {
             Response<Void> response = readingApi.postReading(id, reading).execute();
             String location = response.headers().get("Location");
             long readingId = Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
-            logger.info("saved reading with id:" + readingId);
-            return readingId;
+            logger.info("saved reading with id:" + readingId + "\n");
 
 
         } catch (Exception e) {
@@ -53,7 +52,7 @@ public class MyHttpClient {
             Response<Void> response = sensorApi.postSensor(currentSensor).execute();
             String location = response.headers().get("Location");
             long id = Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
-            logger.info("Current sensor registered  with ID:" + id);
+            logger.info("Current sensor registered  with ID:" + id + "\n");
             return id;
 
 
@@ -68,7 +67,7 @@ public class MyHttpClient {
     public Sensor findClosestSensor(Long id) {
         try {
             Sensor s = sensorApi.getClosestSensor(id.toString()).execute().body();
-            logger.info("Closest sensor is:" + s);
+            logger.info("Closest sensor is:" + s + "\n");
             return s;
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -16,7 +16,7 @@ public class ReadingExchangeService extends ReadingExchangeGrpc.ReadingExchangeI
     public void requestReading(ReadingRequest request, StreamObserver<ReadingResponse> responseObserver) {
         logger.info("Got a new request for reading with id= " + request.getReadingId());
         ReadingResponse response = checkReading(request);
-        logger.info("Responding with " + SensorReadingConverter.toSensorReading(response));
+        logger.info("Responding with " + SensorReadingConverter.toSensorReading(response) + "\n");
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
